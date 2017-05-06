@@ -61,6 +61,12 @@ void dataSenseHat_thread()
     
     // Flag permettant de marquer l'enregistrement des offsets sous Redis
     bool booOffsetIsRecorded(false); 
+
+	// Différents offset stockés dans Redis
+	double offsetX (0);
+	double offsetY (0);
+	double offsetZ (0);
+	double offsetAltitude (0);    
 	
 	while (true)
 	{
@@ -84,25 +90,36 @@ void dataSenseHat_thread()
 		dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getTemperature()));
 		
 		// On enregistre dans Redis pour l'enregistreur de vol
-		objRedis.setDataList("record_sensehat", dataSenseHat);
+		objRedis.setDataList("record_imu", dataSenseHat);
 		
 		// On enregistre les toutes premières données, on s'en servira pour établir les 0
 		if (booOffsetIsRecorded == false) 
 		{
-			objRedis.setDataSimple("offset_X", dataSenseHat[0]);
-			objRedis.setDataSimple("offset_Y", dataSenseHat[1]);
-			objRedis.setDataSimple("offset_Z", dataSenseHat[2]);
-			objRedis.setDataSimple("offset_Altitude", dataSenseHat[3]);
-			objRedis.setDataSimple("offset_Temperature", dataSenseHat[4]);
+			objRedis.setDataSimple("offset_x", dataSenseHat[0]);
+			objRedis.setDataSimple("offset_y", dataSenseHat[1]);
+			objRedis.setDataSimple("offset_z", dataSenseHat[2]);
+			objRedis.setDataSimple("offset_altitude", dataSenseHat[3]);
 		}
 		
-		// On enregistre dans Redis les informations en cours
-		objRedis.setDataSimple("current_X", dataSenseHat[0]);
-		objRedis.setDataSimple("current_Y", dataSenseHat[1]);
-		objRedis.setDataSimple("current_Z", dataSenseHat[2]);
-		objRedis.setDataSimple("current_Altitude", dataSenseHat[3]);
-		objRedis.setDataSimple("current_Temperature", dataSenseHat[4]);
+		// On récupère les offset
+		offsetX = boost::lexical_cast<double>(objRedis.getDataSimple("offset_x"));
+		offsetY = boost::lexical_cast<double>(objRedis.getDataSimple("offset_y"));
+		offsetZ = boost::lexical_cast<double>(objRedis.getDataSimple("offset_z"));
+		offsetAltitude = boost::lexical_cast<double>(objRedis.getDataSimple("offset_altitude"));			
 		
+		// On enregistre dans Redis les informations bruts
+		objRedis.setDataSimple("current_raw_x", dataSenseHat[0]);
+		objRedis.setDataSimple("current_raw_y", dataSenseHat[1]);
+		objRedis.setDataSimple("current_raw_z", dataSenseHat[2]);
+		objRedis.setDataSimple("current_raw_altitude", dataSenseHat[3]);
+		objRedis.setDataSimple("current_raw_temperature", dataSenseHat[4]);
+		
+		// On enregistre dans Redis les informations compensées avec l'offset
+		objRedis.setDataSimple("current_compensated_x", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[0]) - offsetX));
+		objRedis.setDataSimple("current_compensated_y", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[1]) - offsetY));
+		objRedis.setDataSimple("current_compensated_z", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[2]) - offsetZ));
+		objRedis.setDataSimple("current_compensated_altitude", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[3]) - offsetAltitude));
+		objRedis.setDataSimple("current_compensated_temperature", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[4])));
 	}
 }
 

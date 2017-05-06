@@ -13,6 +13,8 @@ class Redis
 		Redis();
 		bool setDataList(std::string key, vector<std::string> data);
 		bool setDataSimple(std::string key, std::string data);
+		
+		std::string getDataSimple(std::string key);
 
 	private:
 		connection::ptr_t m_conn;

@@ -30,3 +30,9 @@ bool Redis::setDataSimple(std::string key, std::string data)
 	return true;
 }
 
+std::string Redis::getDataSimple(std::string key)
+{
+	reply r = m_conn->run(command("GET") << key );
+	return r.str();
+}
+
