@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <time.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -99,6 +100,8 @@ void dataSenseHat_thread()
 			objRedis.setDataSimple("offset_y", dataSenseHat[1]);
 			objRedis.setDataSimple("offset_z", dataSenseHat[2]);
 			objRedis.setDataSimple("offset_altitude", dataSenseHat[3]);
+			
+			booOffsetIsRecorded = true;
 		}
 		
 		// On récupère les offset
@@ -120,6 +123,15 @@ void dataSenseHat_thread()
 		objRedis.setDataSimple("current_compensated_z", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[2]) - offsetZ));
 		objRedis.setDataSimple("current_compensated_altitude", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[3]) - offsetAltitude));
 		objRedis.setDataSimple("current_compensated_temperature", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[4])));
+		
+		// On enregistre le time actuel, on testera dans le diagnostic si cette partie est toujours en cours
+		objRedis.setDataSimple("current_time_imu", boost::lexical_cast<string>(time(NULL)));
+		
+		//cout << objRedis.getDataSimple("current_compensated_x") << "|" << objRedis.getDataSimple("current_compensated_x") << "|";
+		//cout << objRedis.getDataSimple("current_compensated_z") << "|" << objRedis.getDataSimple("current_compensated_altitude") << "|";
+		//cout << objRedis.getDataSimple("current_compensated_temperature") << std::endl;
+		
+		//cout << "IMU: " << time(NULL) << " - " << objRedis.getDataSimple("current_time_imu") << std::endl;
 	}
 }
 
@@ -176,6 +188,13 @@ void dataGps_thread()
 		
 		//...et le status du GPS
 		objRedis.setDataSimple("current_GPS_Status", boost::lexical_cast<string>(objGps.getStatusGps()));
+		
+		// On enregistre le time actuel, on testera dans le diagnostic si cette partie est toujours en cours
+		objRedis.setDataSimple("current_time_gps", boost::lexical_cast<string>(time(NULL)));
+		
+		//cout << "IMU: " << time(NULL) << " - " << objRedis.getDataSimple("current_time_gps") << std::endl;
+		//cout << boost::lexical_cast<string>(objGps.getStatusGps()) << "|" << objRedis.getDataSimple("current_Latitude") << objRedis.getDataSimple("current_Latitude_Indicator") << "|";
+		//cout << objRedis.getDataSimple("current_Longitude") << objRedis.getDataSimple("current_Longitude_Indicator") << std::endl;
 	}
 }
 

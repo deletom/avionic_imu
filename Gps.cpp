@@ -42,10 +42,12 @@ void Gps::getDataGps()
 	if (strs.size() >= 12) {
 		if (strs[2] == "A") {
 			
-			m_latitude = Gps::getConvertDegreeToDecimal(strs[3], strs[4]);
+			//m_latitude = Gps::getConvertDegreeToDecimal(strs[3], strs[4]);
+			m_latitude = strs[3];
 			m_indicatorLatitude = strs[4];
 			
-			m_longitude = Gps::getConvertDegreeToDecimal(strs[5], strs[6]);
+			//m_longitude = Gps::getConvertDegreeToDecimal(strs[5], strs[6]);
+			m_latitude = strs[5];
 			m_indicatorLongitude = strs[6];
 			
 			m_statusGps = true;
