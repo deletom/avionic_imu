@@ -25,11 +25,11 @@ DEPFLAGS = -MMD
 
 LIBFLAGS =  rcs
 
-ALL_INCLUDE = . 
+ALL_INCLUDE = . ./include ./src
 
 ALL_LIBS = RTIMULib boost_system pthread redis3m
 
-PATHS = . 
+PATHS = . ./include ./src
 
 SOURCES = $(foreach dir, $(PATHS), $(wildcard $(dir)/*.$(PS)))
 
