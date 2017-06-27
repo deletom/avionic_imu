@@ -124,12 +124,6 @@ void dataSenseHat_thread() {
 
         // On enregistre le time actuel, on testera dans le diagnostic si cette partie est toujours en cours
         objRedis.setDataSimple("current_time_imu", boost::lexical_cast<string>(time(NULL)));
-
-        //cout << objRedis.getDataSimple("current_compensated_x") << "|" << objRedis.getDataSimple("current_compensated_x") << "|";
-        //cout << objRedis.getDataSimple("current_compensated_z") << "|" << objRedis.getDataSimple("current_compensated_altitude") << "|";
-        //cout << objRedis.getDataSimple("current_compensated_temperature") << std::endl;
-
-        //cout << "IMU: " << time(NULL) << " - " << objRedis.getDataSimple("current_time_imu") << std::endl;
     }
 }
 
@@ -187,10 +181,6 @@ void dataGps_thread() {
 
         // On enregistre le time actuel, on testera dans le diagnostic si cette partie est toujours en cours
         objRedis.setDataSimple("current_time_gps", boost::lexical_cast<string>(time(NULL)));
-
-        //cout << "IMU: " << time(NULL) << " - " << objRedis.getDataSimple("current_time_gps") << std::endl;
-        //cout << boost::lexical_cast<string>(objGps.getStatusGps()) << "|" << objRedis.getDataSimple("current_Latitude") << objRedis.getDataSimple("current_Latitude_Indicator") << "|";
-        //cout << objRedis.getDataSimple("current_Longitude") << objRedis.getDataSimple("current_Longitude_Indicator") << std::endl;
     }
 }
 
