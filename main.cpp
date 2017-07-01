@@ -63,11 +63,17 @@ void dataSenseHat_thread() {
     // Flag permettant de marquer l'enregistrement des offsets sous Redis
     bool booOffsetIsRecorded(false);
 
+    // Configuration : Doit-on enregistrer les informations dans la boite noire
+    std::string config_recorded_imu;
+
     // Différents offset stockés dans Redis
     double offsetX(0);
     double offsetY(0);
     double offsetZ(0);
     double offsetAltitude(0);
+
+    // On récupère la configuration pour l'enregistrement de la boite noire
+    config_recorded_imu = objRedis.getDataSimple("config_imu_flight_data_recorder");
 
     while (true) {
         // SenseHat définit un interval d'interrogation, on va s'en servir pour calmer un peu le jeu
@@ -90,7 +96,9 @@ void dataSenseHat_thread() {
         dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getTemperature()));
 
         // On enregistre dans Redis pour l'enregistreur de vol
-        objRedis.setDataList("record_imu", dataSenseHat);
+        if (config_recorded_imu == "true") {
+            objRedis.setDataList("record_imu", dataSenseHat);
+        }
 
         // On enregistre les toutes premières données, on s'en servira pour établir les 0
         if (booOffsetIsRecorded == false) {
@@ -132,6 +140,10 @@ void dataSenseHat_thread() {
 //-----------------------------
 
 void dataGps_thread() {
+
+    // Configuration : Doit-on enregistrer les informations dans la boite noire
+    std::string config_recorded_gps;
+
     // Gps : On instancie l'objet 
     Gps objGps("/dev/ttyUSB0", 4800);
 
@@ -140,6 +152,9 @@ void dataGps_thread() {
 
     // Flag permettant de marquer l'enregistrement de la base sous Redis
     bool booBaseIsRecorded(false);
+
+    // On récupère la configuration pour l'enregistrement de la boite noire
+    config_recorded_gps = objRedis.getDataSimple("config_gps_flight_data_recorder");
 
     while (true) {
         // On va ralentir les interrogations à 1s, c'est largement suffisant pour notre usage
@@ -160,7 +175,9 @@ void dataGps_thread() {
         dataGPS.push_back(boost::lexical_cast<string>(objGps.getLongitudeIndicator()));
 
         // On enregistre dans Redis pour l'enregistreur de vol
-        objRedis.setDataList("record_gps", dataGPS);
+        if (config_recorded_gps == "true") {
+            objRedis.setDataList("record_gps", dataGPS);
+        }
 
         // On enregistre les toutes premières données, on s'en servira pour établir les 0
         if (booBaseIsRecorded == false) {
