@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include "RTIMULib.h"
 #include "Sensehat.h"
@@ -65,7 +66,12 @@ void Sensehat::getDataSensor() {
         m_x = imuData.fusionPose.x() * RTMATH_RAD_TO_DEGREE;
         m_y = imuData.fusionPose.y() * RTMATH_RAD_TO_DEGREE;
         m_z = imuData.fusionPose.z() * RTMATH_RAD_TO_DEGREE;
-
+        
+        // Données provenant de la centrale
+        m_accel_x = imuData.accel.x();
+        m_accel_y = imuData.accel.y();
+        m_accel_z = imuData.accel.z();
+        
         // Données d'altitude
         m_altitude = RTMath::convertPressureToHeight(imuData.pressure);
 
@@ -105,6 +111,30 @@ void Sensehat::setZ(double z) {
 
 double Sensehat::getZ() {
     return m_z;
+}
+
+void Sensehat::setAccelX(double accel_x) {
+    m_accel_x = accel_x;
+}
+
+double Sensehat::getAccelX() {
+    return m_accel_x;
+}
+
+void Sensehat::setAccelY(double accel_y) {
+    m_accel_y = accel_y;
+}
+
+double Sensehat::getAccelY() {
+    return m_accel_y;
+}
+
+void Sensehat::setAccelZ(double accel_z) {
+    m_accel_z = accel_z;
+}
+
+double Sensehat::getAccelZ() {
+    return m_accel_z;
 }
 
 void Sensehat::setAltitude(double altitude) {

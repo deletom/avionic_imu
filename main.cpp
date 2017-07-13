@@ -90,6 +90,9 @@ void dataSenseHat_thread() {
         dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getX()));
         dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getY()));
         dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getZ()));
+        dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getAccelX()));
+        dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getAccelY()));
+        dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getAccelZ()));
         // Données Altitude
         dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getAltitude()));
         // Données Température
@@ -120,8 +123,11 @@ void dataSenseHat_thread() {
         objRedis.setDataSimple("current_raw_x", dataSenseHat[0]);
         objRedis.setDataSimple("current_raw_y", dataSenseHat[1]);
         objRedis.setDataSimple("current_raw_z", dataSenseHat[2]);
-        objRedis.setDataSimple("current_raw_altitude", dataSenseHat[3]);
-        objRedis.setDataSimple("current_raw_temperature", dataSenseHat[4]);
+        objRedis.setDataSimple("current_accel_x", dataSenseHat[3]);
+        objRedis.setDataSimple("current_accel_y", dataSenseHat[4]);
+        objRedis.setDataSimple("current_accel_z", dataSenseHat[5]);
+        objRedis.setDataSimple("current_raw_altitude", dataSenseHat[6]);
+        objRedis.setDataSimple("current_raw_temperature", dataSenseHat[7]);
 
         // On enregistre dans Redis les informations compensées avec l'offset
         objRedis.setDataSimple("current_compensated_x", boost::lexical_cast<string>(boost::lexical_cast<double>(dataSenseHat[0]) - offsetX));

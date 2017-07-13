@@ -15,6 +15,15 @@ class Sensehat
         
         void setZ(double z);
         double getZ();
+        
+        void setAccelX(double accel_x);
+        double getAccelX();
+        
+        void setAccelY(double accel_y);
+        double getAccelY();
+        
+        void setAccelZ(double accel_z);
+        double getAccelZ();
 
         void setAltitude(double altitude);
         double getAltitude();
@@ -34,6 +43,10 @@ class Sensehat
 		double m_x;
 		double m_y;
 		double m_z;
+                
+		double m_accel_x;
+		double m_accel_y;
+		double m_accel_z;
 
 		double m_altitude;
 		double m_temperature;
