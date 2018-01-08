@@ -151,7 +151,7 @@ void dataGps_thread() {
     std::string config_recorded_gps;
 
     // Gps : On instancie l'objet 
-    Gps objGps("/dev/ttyUSB0", 4800);
+    Gps objGps("/dev/ttyUSB1", 4800);
 
     // Redis : On instancie l'objet (Connexion Redis)
     Redis objRedis;
