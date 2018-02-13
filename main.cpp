@@ -72,9 +72,6 @@ void dataSenseHat_thread() {
     double offsetZ(0);
     double offsetAltitude(0);
 
-    // On récupère la configuration pour l'enregistrement de la boite noire
-    config_recorded_imu = objRedis.getDataSimple("config_imu_flight_data_recorder");
-
     while (true) {
         // SenseHat définit un interval d'interrogation, on va s'en servir pour calmer un peu le jeu
         usleep(objSenseHat.getSenseHatInterval());
@@ -97,11 +94,6 @@ void dataSenseHat_thread() {
         dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getAltitude()));
         // Données Température
         dataSenseHat.push_back(boost::lexical_cast<string>(objSenseHat.getTemperature()));
-
-        // On enregistre dans Redis pour l'enregistreur de vol
-        if (config_recorded_imu == "true") {
-            objRedis.setDataList("record_imu", dataSenseHat);
-        }
 
         // On enregistre les toutes premières données, on s'en servira pour établir les 0
         if (booOffsetIsRecorded == false) {
@@ -151,16 +143,13 @@ void dataGps_thread() {
     std::string config_recorded_gps;
 
     // Gps : On instancie l'objet 
-    Gps objGps("/dev/ttyUSB1", 4800);
+    Gps objGps("/dev/serial/by-path/platform-3f980000.usb-usb-0:1.3:1.0-port0", 4800);
 
     // Redis : On instancie l'objet (Connexion Redis)
     Redis objRedis;
 
     // Flag permettant de marquer l'enregistrement de la base sous Redis
     bool booBaseIsRecorded(false);
-
-    // On récupère la configuration pour l'enregistrement de la boite noire
-    config_recorded_gps = objRedis.getDataSimple("config_gps_flight_data_recorder");
 
     while (true) {
         // On va ralentir les interrogations à 1s, c'est largement suffisant pour notre usage
@@ -179,11 +168,6 @@ void dataGps_thread() {
         // Données Longitude
         dataGPS.push_back(boost::lexical_cast<string>(objGps.getLongitude()));
         dataGPS.push_back(boost::lexical_cast<string>(objGps.getLongitudeIndicator()));
-
-        // On enregistre dans Redis pour l'enregistreur de vol
-        if (config_recorded_gps == "true") {
-            objRedis.setDataList("record_gps", dataGPS);
-        }
 
         // On enregistre les toutes premières données, on s'en servira pour établir les 0
         if (booBaseIsRecorded == false) {
