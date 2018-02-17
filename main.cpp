@@ -1,3 +1,8 @@
+/**
+ * Centrale Inertielle
+ * Auteur : Thomas DELECOURT
+ */
+
 //-----------------------------
 //----- INCLUDE 		  -----
 //-----------------------------
